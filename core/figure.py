@@ -84,6 +84,8 @@ def draw_equity_curve_plotly(df, data_dict, date_col=None, right_axis=None, pic_
                           )
                       ]
                       )
+    # 统一设置悬浮框中的日期格式为 yyyy-MM-dd
+    fig.update_xaxes(hoverformat='%Y-%m-%d')
     fig.update_layout(
         updatemenus=[
             dict(

@@ -103,6 +103,8 @@ def draw_ic_plotly(x, y1, y2, title='', info='', pic_size=(1800, 600), save_path
         hovermode="x unified",
         hoverlabel=dict(bgcolor='rgba(255,255,255,0.5)', )
     )
+    # 悬浮框日期格式统一为 yyyy-MM-dd
+    fig.update_xaxes(hoverformat='%Y-%m-%d')
 
     # 是否要保存图像
     if save_path:
@@ -168,6 +170,8 @@ def draw_bar_plotly(x, y, title='', pic_size=(1800, 600), y_range=(), save_path=
             borderwidth=1  # 图例边框宽度
         )
     )
+    # 悬浮框日期格式统一为 yyyy-MM-dd
+    fig.update_xaxes(hoverformat='%Y-%m-%d')
 
     if save_path:
         plot(figure_or_data=fig, filename=str(save_path), auto_open=False)
@@ -272,6 +276,8 @@ def draw_hedge_signal_plotly(df, save_path, title, trade_df, _res_loc, buy_metho
     fig.update_layout(
         legend=dict(x=0.75, y=1)
     )
+    # 两个子图共享X轴，统一设置悬浮框日期格式
+    fig.update_xaxes(hoverformat='%Y-%m-%d')
     # 保存路径
     save_path = save_path / f'{title}.html'
     plot(figure_or_data=fig, filename=str(save_path), auto_open=False)
