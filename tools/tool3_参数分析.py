@@ -183,40 +183,54 @@ def analyze_params(analysis_type):
 
 
 if __name__ == "__main__":
+    # 仅修改 __main__：将单次回测结果包装为一次“遍历结果”以便现有逻辑直接运行
+    from shutil import copy2, rmtree
+
     # ====== 配置信息 ======
-    trav_name = "小市值策略"  # 用于读取 data/遍历结果/ 中的遍历回测结果
-    # 回测路径和参数分析输出路径
-    result_folder_path = get_folder_path("data", "遍历结果", trav_name, auto_create=False)
+    trav_name = "市值+资金流强度"
+
+    # 参数分析输出路径
     out_folder_path = get_folder_path("data", "分析结果", "参数分析")
 
-    # 参数设置
+    # 参数设置：按 batch 的组合数自动创建 参数组合_1..N
     batch = {
         "select_num": [1, 3, 5],
         # 注意，re_timing如果没用的话，一定要注释掉，不然会导致结果出现误差
-        "re_timing": [100, 200, 300]
+      "re_timing": [100,200,300],
     }
 
-    # 若绘制单参数平原图，param_x 填写变量，param_y=''
-    # 若绘制双参数热力图，则 param_x和param_y 填写变量, param_为热力图x轴变量，param_y为热力图y轴变量，可按需更改
+    # 源数据：单次回测结果目录
+    src_single_result_dir = get_folder_path("data", "回测结果", trav_name, auto_create=False)
+
+    # 目标数据：临时遍历结果目录（与 prepare_data 期望一致）
+    result_folder_path = get_folder_path("data", "遍历结果", trav_name, auto_create=True)
+
+    # 清理旧的 参数组合_* 目录，避免数量不一致
+    for sub in result_folder_path.iterdir():
+        if sub.is_dir() and sub.name.startswith("参数组合_"):
+            try:
+                rmtree(sub)
+            except Exception:
+                pass
+
+    # 根据 batch 的组合数量复制数据
+    combo_count = len(dict_itertools(batch))
+    for i in range(1, combo_count + 1):
+        temp_combo_dir = result_folder_path / f"参数组合_{i}"
+        os.makedirs(temp_combo_dir, exist_ok=True)
+        for item in src_single_result_dir.iterdir():
+            if item.is_file():
+                copy2(item, temp_combo_dir / item.name)
+
+    # 单参数平原图；如需热力图可为 param_y 赋值为 "re_timing" 并拓展 batch 与 目录
     param_x = "select_num"
     param_y = "re_timing"
-    # param_y = ""
 
-    # 这里需要固定非观测参数，然后画参数图，例如该案例固定hold_period== 12H，来看LowPrice和QuoteVolumeMean的参数热力图
-    # 注意点：多参数画图，必须固定其他参数。单参数平原需固定该参数以外的其他参数，双参数热力图需固定除两参数以外的参数
-    limit_dict = {
-        # 're_timing': [100],
-        # "select_num": [5],
-        # '换手率': [20],
-        # '换手率': [20],
-    }
+    limit_dict = {}
 
-    # 分析指标，支持以下：
-    # 累积净值、年化收益、最大回撤、年化收益/回撤比、盈利周期数、亏损周期数、胜率、每周期平均收益
-    # 盈亏收益比、单周期最大盈利、单周期大亏损、最大连续盈利周期数、最大连续亏损周期数、收益率标准差
+    # 分析指标
     evaluation_indicator = "累积净值"
 
     # ====== 主逻辑 ======
-    # 进行参数分析
     analysis_type = "single" if len(param_y.strip()) == 0 else "double"
     analyze_params(analysis_type)

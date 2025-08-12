@@ -64,8 +64,8 @@ def calc_equity(conf: BacktestConfig, pivot_dict_stock: dict, df_stock_ratio: pd
     """
     symbols = sorted(df_stock_ratio.columns)
     symbol_types = [get_symbol_type(sym) for sym in symbols]
-    if any(x == BSE_MAIN for x in symbol_types):
-        raise ValueError(f"BSE not supported")  # No Beijing stocks
+    # if any(x == BSE_MAIN for x in symbol_types):
+    #     raise ValueError(f"BSE not supported")  # No Beijing stocks
 
     # 确定回测区间
     start_date = max(df_stock_ratio.index.min(), pd.to_datetime(conf.start_date))
