@@ -44,8 +44,8 @@ fin_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付�
 # 策略明细
 strategy = {
     'name': '成交额缩波策略',  # 策略名
-    'hold_period': '3D',  # 持仓周期，W 代表周，M 代表月，还支持日频：3D、5D、10D
-    'select_num': 5,  # 选股数量，可以是整数，也可以是小数，比如 0.1 表示选取 10% 的股票
+    'hold_period': '1W',  # 持仓周期，W 代表周，M 代表月，还支持日频：3D、5D、10D
+    'select_num': 10,  # 选股数量，可以是整数，也可以是小数，比如 0.1 表示选取 10% 的股票
     "factor_list": [  # 选股因子列表
         ('Ret', True, 5, 1),
         ('市值', True, '', 1),
