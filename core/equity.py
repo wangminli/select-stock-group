@@ -205,6 +205,29 @@ def show_plot_performance(conf: BacktestConfig, account_df, rtn, year_return, ti
     # 如果画资金曲线，同时也会画上回撤曲线
     pic_title = f"累积净值:{rtn.at['累积净值', 0]}, 年化收益:{rtn.at['年化收益', 0]}, 最大回撤:{rtn.at['最大回撤', 0]}"
     pic_desc = conf.get_fullname()
+    
+    # 使用strategy_evaluate方法中生成的指标
+    strategy_metrics = {
+        "累积净值": str(rtn.at['累积净值', 0]),
+        "年化收益": str(rtn.at['年化收益', 0]),
+        "最大回撤": str(rtn.at['最大回撤', 0]),
+        "最大回撤开始时间": str(rtn.at['最大回撤开始时间', 0]),
+        "最大回撤结束时间": str(rtn.at['最大回撤结束时间', 0]),
+        "胜率": str(rtn.at['胜率', 0]),
+        "年化收益/回撤比": str(rtn.at['年化收益/回撤比', 0]),
+        "盈亏收益比": str(rtn.at['盈亏收益比', 0]),
+        "每周期平均收益": str(rtn.at['每周期平均收益', 0]),
+        "单周期最大盈利": str(rtn.at['单周期最大盈利', 0]),
+        "单周期大亏损": str(rtn.at['单周期大亏损', 0]),
+        "最大连续盈利周期数": str(rtn.at['最大连续盈利周期数', 0]),
+        "最大连续盈利开始日期": str(rtn.at['最大连续盈利开始日期', 0]),
+        "最大连续盈利结束日期": str(rtn.at['最大连续盈利结束日期', 0]),
+        "最大连续亏损周期数": str(rtn.at['最大连续亏损周期数', 0]),
+        "最大连续亏损开始日期": str(rtn.at['最大连续亏损开始日期', 0]),
+        "最大连续亏损结束日期": str(rtn.at['最大连续亏损结束日期', 0]),
+        "收益率标准差": str(rtn.at['收益率标准差', 0])
+    }
+    
     # 调用画图函数
     draw_equity_curve_plotly(
         account_df,
@@ -214,4 +237,5 @@ def show_plot_performance(conf: BacktestConfig, account_df, rtn, year_return, ti
         title=pic_title,
         desc=pic_desc,
         path=conf.get_result_folder() / f"{title_prefix}资金曲线.html",
+        strategy_metrics=strategy_metrics,
     )

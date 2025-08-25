@@ -52,8 +52,8 @@ def strategy_evaluate(equity, net_col='净值', pct_col='涨跌幅'):
     # 计算最大回撤开始时间
     start_date = equity[equity['交易日期'] <= end_date].sort_values(by=net_col, ascending=False).iloc[0]['交易日期']
     results.loc[0, '最大回撤'] = num_to_pct(max_draw_down)
-    results.loc[0, '最大回撤开始时间'] = str(start_date)
-    results.loc[0, '最大回撤结束时间'] = str(end_date)
+    results.loc[0, '最大回撤开始时间'] = str(start_date).split(' ')[0]
+    results.loc[0, '最大回撤结束时间'] = str(end_date).split(' ')[0]
     # ===年化收益/回撤比：我个人比较关注的一个指标
     results.loc[0, '年化收益/回撤比'] = round(annual_return / abs(max_draw_down), 2)
     # ===统计每个周期
@@ -88,8 +88,8 @@ def strategy_evaluate(equity, net_col='净值', pct_col='涨跌幅'):
             profit_cycles_before = sum([length for _, length in profit_groups[:profit_start_idx] if not np.isnan(length)])
             profit_start_date = equity.iloc[profit_cycles_before]['交易日期']
             profit_end_date = equity.iloc[profit_cycles_before + max_profit_cycles - 1]['交易日期']
-            results.loc[0, '最大连续盈利开始日期'] = str(profit_start_date)
-            results.loc[0, '最大连续盈利结束日期'] = str(profit_end_date)
+            results.loc[0, '最大连续盈利开始日期'] = str(profit_start_date).split(' ')[0]
+            results.loc[0, '最大连续盈利结束日期'] = str(profit_end_date).split(' ')[0]
     
     # 计算连续亏损周期
     loss_groups = [(k, len(list(v))) for k, v in itertools.groupby(np.where(equity[pct_col] <= 0, 1, np.nan))]
@@ -110,8 +110,8 @@ def strategy_evaluate(equity, net_col='净值', pct_col='涨跌幅'):
             loss_cycles_before = sum([length for _, length in loss_groups[:loss_start_idx] if not np.isnan(length)])
             loss_start_date = equity.iloc[loss_cycles_before]['交易日期']
             loss_end_date = equity.iloc[loss_cycles_before + max_loss_cycles - 1]['交易日期']
-            results.loc[0, '最大连续亏损开始日期'] = str(loss_start_date)
-            results.loc[0, '最大连续亏损结束日期'] = str(loss_end_date)
+            results.loc[0, '最大连续亏损开始日期'] = str(loss_start_date).split(' ')[0]
+            results.loc[0, '最大连续亏损结束日期'] = str(loss_end_date).split(' ')[0]
 
     # ===其他评价指标
     results.loc[0, '收益率标准差'] = num_to_pct(equity[pct_col].std())

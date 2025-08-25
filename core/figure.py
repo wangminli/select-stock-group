@@ -19,7 +19,7 @@ from core.utils.path_kit import get_file_path
 
 
 def draw_equity_curve_plotly(df, data_dict, date_col=None, right_axis=None, pic_size=None, chg=False,
-                             title=None, path=get_file_path('data', 'pic.html'), show=True, desc=None):
+                             title=None, path=get_file_path('data', 'pic.html'), show=True, desc=None, strategy_metrics=None):
     """
     绘制策略曲线
     :param df: 包含净值数据的df
@@ -32,6 +32,7 @@ def draw_equity_curve_plotly(df, data_dict, date_col=None, right_axis=None, pic_
     :param path: 图片路径
     :param show: 是否打开图片
     :param desc: 图表描述
+    :param strategy_metrics: 策略评价指标字典
     :return:
     """
     if pic_size is None:
@@ -68,6 +69,30 @@ def draw_equity_curve_plotly(df, data_dict, date_col=None, right_axis=None, pic_
                                      fill='tozeroy',
                                      yaxis='y2'))  # 标明设置一个不同于trace1的一个坐标轴
 
+    # 如果有策略评价指标，添加表格
+    if strategy_metrics:
+        # 创建策略评价指标表格
+        table_trace = go.Table(
+            header=dict(
+                values=['指标名称', '数值'],
+                font=dict(size=12, color='white'),
+                fill_color='rgb(49, 130, 189)',
+                align='center'
+            ),
+            cells=dict(
+                values=[
+                    list(strategy_metrics.keys()),
+                    list(strategy_metrics.values())
+                ],
+                font=dict(size=11, color='black'),
+                fill_color='rgb(245, 245, 245)',
+                align='center',
+                height=25
+            ),
+            domain=dict(x=[0.80, 1.0], y=[0.02, 0.82])
+        )
+        fig.add_trace(table_trace)
+
     fig.update_layout(template="none", width=pic_size[0], height=pic_size[1], title_text=title,
                       hovermode="x unified", hoverlabel=dict(bgcolor='rgba(255,255,255,0.5)', ),
                       annotations=[
@@ -98,6 +123,22 @@ def draw_equity_curve_plotly(df, data_dict, date_col=None, right_axis=None, pic_
                          args=[{"yaxis.type": "log"}]),
                 ])],
     )
+    
+    # 设置X轴范围，为表格留出空间
+    fig.update_xaxes(domain=[0.0, 0.73])
+    
+    # 设置图例位置
+    fig.update_layout(
+        showlegend=True,
+        legend=dict(
+            x=0.8,
+            y=1.0,
+            bgcolor='white',
+            bordercolor='gray',
+            borderwidth=1
+        )
+    )
+    
     plot(figure_or_data=fig, filename=str(path), auto_open=False)
 
     fig.update_yaxes(
