@@ -69,10 +69,49 @@ def strategy_evaluate(equity, net_col='净值', pct_col='涨跌幅'):
     results.loc[0, '单周期大亏损'] = num_to_pct(equity[pct_col].min())  # 单笔最大亏损
 
     # ===连续盈利亏损
-    results.loc[0, '最大连续盈利周期数'] = max(
-        [len(list(v)) for k, v in itertools.groupby(np.where(equity[pct_col] > 0, 1, np.nan))])  # 最大连续盈利次数
-    results.loc[0, '最大连续亏损周期数'] = max(
-        [len(list(v)) for k, v in itertools.groupby(np.where(equity[pct_col] <= 0, 1, np.nan))])  # 最大连续亏损次数
+    # 计算连续盈利周期
+    profit_groups = [(k, len(list(v))) for k, v in itertools.groupby(np.where(equity[pct_col] > 0, 1, np.nan))]
+    max_profit_cycles = max([length for _, length in profit_groups if not np.isnan(length)]) if profit_groups else 0
+    results.loc[0, '最大连续盈利周期数'] = max_profit_cycles
+    
+    # 找到最大连续盈利周期的开始和结束日期
+    if max_profit_cycles > 0:
+        profit_start_idx = None
+        for i, (k, length) in enumerate(profit_groups):
+            if not np.isnan(length) and length == max_profit_cycles:
+                # 找到最大连续盈利周期的位置
+                profit_start_idx = i
+                break
+        
+        if profit_start_idx is not None:
+            # 计算在原始数据中的实际索引
+            profit_cycles_before = sum([length for _, length in profit_groups[:profit_start_idx] if not np.isnan(length)])
+            profit_start_date = equity.iloc[profit_cycles_before]['交易日期']
+            profit_end_date = equity.iloc[profit_cycles_before + max_profit_cycles - 1]['交易日期']
+            results.loc[0, '最大连续盈利开始日期'] = str(profit_start_date)
+            results.loc[0, '最大连续盈利结束日期'] = str(profit_end_date)
+    
+    # 计算连续亏损周期
+    loss_groups = [(k, len(list(v))) for k, v in itertools.groupby(np.where(equity[pct_col] <= 0, 1, np.nan))]
+    max_loss_cycles = max([length for _, length in loss_groups if not np.isnan(length)]) if loss_groups else 0
+    results.loc[0, '最大连续亏损周期数'] = max_loss_cycles
+    
+    # 找到最大连续亏损周期的开始和结束日期
+    if max_loss_cycles > 0:
+        loss_start_idx = None
+        for i, (k, length) in enumerate(loss_groups):
+            if not np.isnan(length) and length == max_loss_cycles:
+                # 找到最大连续亏损周期的位置
+                loss_start_idx = i
+                break
+        
+        if loss_start_idx is not None:
+            # 计算在原始数据中的实际索引
+            loss_cycles_before = sum([length for _, length in loss_groups[:loss_start_idx] if not np.isnan(length)])
+            loss_start_date = equity.iloc[loss_cycles_before]['交易日期']
+            loss_end_date = equity.iloc[loss_cycles_before + max_loss_cycles - 1]['交易日期']
+            results.loc[0, '最大连续亏损开始日期'] = str(loss_start_date)
+            results.loc[0, '最大连续亏损结束日期'] = str(loss_end_date)
 
     # ===其他评价指标
     results.loc[0, '收益率标准差'] = num_to_pct(equity[pct_col].std())
