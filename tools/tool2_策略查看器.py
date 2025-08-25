@@ -229,7 +229,7 @@ def plot_stock_kline(conf: BacktestConfig, k_start: str, k_end: str, add_days=12
     wb.save(excel_path)
 
     print(f'✅ 所选股票K线图绘制完毕，耗时{(datetime.datetime.now() - start_time).total_seconds():.2f}秒')
-    print('✅ 选股分析结果已保存到本地，请打开对应的Excel文件查看')
+    print('✅ 选股分析结果已保存到本地，请在【分析结果】路径查看选股行情图和选股分析结果')
 
 
 if __name__ == '__main__':

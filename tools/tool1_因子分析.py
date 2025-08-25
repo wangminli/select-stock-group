@@ -95,9 +95,15 @@ def factor_analysis(conf: BacktestConfig, factor_name: str) -> None:
     PFun.draw_bar_plotly(x=group_value['分组'], y=group_value['净值'], title=f'{factor_name}因子分组净值',
                          save_path=nav_save_path)
 
-    print(f'✅ {factor_name}因子分析完成, 总用时{(datetime.datetime.now() - start_time).total_seconds():.2f}秒')
+    print(f'✅ {factor_name}因子分析完成, 总用时{(datetime.datetime.now() - start_time).total_seconds():.2f}秒，请在【因子分析】路径查看详情')
 
 
 if __name__ == '__main__':
     backtest_config = load_config()
-    factor_analysis(backtest_config, factor_name='成交额缩量因子_(10, 60)')
+    """
+    发现这个factor_name需要回测完一次才能分析，不行就是解析了一个寂寞——2025-08-25
+    比如：
+        资金流强度_(5, 20, 1.2)
+        市值_None
+    """
+    factor_analysis(backtest_config, factor_name='资金流强度_(5, 20, 1.2)')

@@ -110,7 +110,7 @@ class FactorConfig:
         return get_col_name(self.name, self.param)
 
     def __repr__(self):
-        return f'{self.col_name}{"↑" if self.is_sort_asc else "↓"}#权重:{self.weight}'
+        return f'{self.col_name}{"↑" if self.is_sort_asc else "↓"}#权重:{self.weight:.3f}'
 
     def to_tuple(self):
         return self.name, self.is_sort_asc, self.param, self.weight
