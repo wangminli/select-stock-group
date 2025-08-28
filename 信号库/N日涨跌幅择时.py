@@ -24,10 +24,11 @@ def equity_signal(equity_df: pd.DataFrame, *args) -> pd.Series:
     :return: 返回包含 leverage 的数据
     """
     # ===== 计算指标
-
+    n_days = int(args[0])
+    threshold = float(args[1])
     # 默认满仓
     signals = pd.Series(1.0, index=equity_df.index)
-    condition = equity_df['净值'].pct_change(int(args[0])) < -0.07
+    condition = equity_df['净值'].pct_change(int(n_days)) < threshold
     signals[condition] = 0.0
     signals.fillna(1.0, inplace=True)
 
