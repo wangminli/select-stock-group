@@ -1,9 +1,17 @@
 """
-https://bbs.quantclass.cn/thread/66423
-本策略考虑使用某个特定的时间窗口，特定的超跌信号判断，以及特定的反弹信号判断来捕捉市场的超跌反弹信号。
-本策略目前采用的时间窗口55天，即55天的最高值以及达到最高值以后的日期中创下的最低值以及创下最低值以后的反弹5%位置时介入
-（本策略未考虑排除达到最高峰以后，起二波然后下跌中继的情况，未考虑offset情况，如需详细研究，请自行调整因子进行深入研究）
-本策略用到循环语句运算对于每个交易日都要计算一个窗口内的最低价，导致速度很慢，有需要的自己魔改加速
+标题：【任务1】【倒计时3.0】基于市值和资金流强度构建的选股策略_48.56%_-26.15%_1.86
+链接：https://bbs.quantclass.cn/thread/64186
+评价：
+Log轴特别好看，一路笔直向上说明指数曲线非常棒！
+RankIC也是一路向下，想对笔直
+	亮点：
+	缺点：
+	15年回撤大小：
+	22、23年涨跌：
+	对数坐标轴斜率：
+	RankIC表现：
+
+整体表现：
 
 """
 """
@@ -24,9 +32,10 @@ from pathlib import Path
 # 1️⃣ 回测配置
 # ====================================================================================================
 # 回测数据的起始时间。如果因子使用滚动计算方法，在回测初期因子值可能为 NaN，实际的首次交易日期可能晚于这个起始时间。
-start_date = "2017-01-01"
+start_date = "2009-01-01"
 # 回测数据的结束时间。可以设为 None，表示使用最新数据；也可以指定具体日期，例如 '2024-11-01'。
 end_date = None
+# end_date = "2024-12-30"
 
 # ====================================================================================================
 # 2️⃣ 数据配置
@@ -39,44 +48,49 @@ data_center_path = Path(r"/Users/wangminli/我的文档/Quant/邢不行量化课
 # (必选) 股票日线数据，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-trading-data
 # 参考：https://bbs.quantclass.cn/thread/39599
 # (必选) 股票日线数据，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-trading-data
-stock_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-trading-data-pro"  # 参考：https://bbs.quantclass.cn/thread/39599
+stock_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-trading-data-pro-2025-08-07"  # 参考：https://bbs.quantclass.cn/thread/39599
 # (必选) 指数数据路径，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-main-index-data
-index_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-main-index-data"
+index_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-main-index-data-2025-08-06"
 # (可选) 财务数据，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-fin-data-xbx
-fin_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-fin-data-xbx"
+fin_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-fin-data-xbx-2025-08-07"
 
 
 # ====================================================================================================
 # 3️⃣ 策略配置
 # ====================================================================================================
 strategy = {
-    'name': '超跌反弹拐点策略',  # 策略名
-    'hold_period': '5D',  # 持仓周期，W 代表周，M 代表月，还支持日频：3D、5D、10D
-    'select_num': 5,  # 选股数量，可以是整数，也可以是小数，比如 0.1 表示选取 10% 的股票
-    "factor_list": [  # 选股因子列表
-        ('超跌反弹拐点趋势捕捉', True, 55, 1),  # 使用55天回看窗口
-        ('市值', True, None, 0.5),  # 辅助因子：小市值
+    'name': '市值+资金流强度',
+    'hold_period': '1W',
+    'select_num': 10,
+    "factor_list": [
+        ('市值', True, None, 1),
+        ('资金流强度', False, [5, 20, 1.2], 2),  # 新增因子
+
     ],
     "filter_list": [
-        ('月份', [1,4], 'val:!=1'),  # 不在4月份选股
-
-    ]  # 过滤因子列表
-}
+        ('交易所', None, 'val:<=3'),  # 1沪A 2深A 3创业板 4科创板 5北交所
+        ('月份', [1, 4], 'val:!=1'),  # 不在1、4月份选股
+        ('市值', None, 'pct:<0.2'),
+    ]}
 
 days_listed = 250  # 上市至今交易天数
+# excluded_boards = ["kcb", "bj"]  # 同时过滤创业板和科创板和北交所
 
-#excluded_boards = ["bj","kcb"]  # 过滤板块，默认不过滤
+# excluded_boards = ["bj"]  # 过滤板块，默认不过滤
 excluded_boards = ["cyb", "kcb", "bj"]  # 同时过滤创业板和科创板和北交所
 
+
+#equity_timing = {"name": "移动平均线", "params": [20]}
+equity_timing = {"name": "MA双均线择时", "params": [10,20]}
 
 # ====================================================================================================
 # 4️⃣ 模拟交易配置
 # 以下参数几乎不需要改动
 # ====================================================================================================
-initial_cash = 10_0000  # 初始资金10w
+initial_cash = 2_0000  # 初始资金10w
 # initial_cash = 1_0000_0000  # 初始资金10w
 # 手续费
-c_rate = 1 / 10000
+c_rate = 0.86 / 10000
 # 印花税
 t_rate = 1 / 2000
 # 并行运行的进程数

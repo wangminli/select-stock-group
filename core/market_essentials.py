@@ -471,7 +471,8 @@ def save_latest_result(conf, select_result_df):
 
 def select_analysis(conf, select_df: pd.DataFrame, top_n=10, show_plot=True) -> None:
     # 新增函数：分析每年的选股情况
-
+    #wml：看不懂平均市值分位数.html和平均市值.html，所以暂时注掉——2025-08-29
+    show_plot = False
     # 新增：获取所有股票最新的名字
     last_stock_name = pd.DataFrame(select_df.groupby('股票代码')['股票名称'].last()).reset_index()
     # 每年选股次数n的股票
