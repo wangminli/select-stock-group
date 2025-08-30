@@ -1,4 +1,18 @@
 """
+标题：【任务1】【Kun】基于市值和季度PEG构建的选股策略_56.48%_-27.80%_2.03
+链接：https://bbs.quantclass.cn/thread/64262
+评价：
+	亮点：
+	缺点：
+	15年回撤大小：
+	22、23年涨跌：
+	对数坐标轴斜率：
+	RankIC表现：
+
+整体表现：
+
+"""
+"""
 邢不行™️选股框架
 Python股票量化投资课程
 
@@ -24,45 +38,55 @@ end_date = None
 # 2️⃣ 数据配置
 # ====================================================================================================
 # 数据中心的文件夹，使用数据客户端，并订阅相关数据，就不需要再手动指定每一个必要数据
-data_center_path = Path(r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/")
+data_center_path = Path(r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据")
 
 # 数据源的定义，如果不使用数据客户端的时候，可以手动自定义以下逐个数据源
 # ** 股票日线数据 和 指数数据是必须的，其他的数据可以在 data_sources 中定义 **
 # (必选) 股票日线数据，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-trading-data
 # 参考：https://bbs.quantclass.cn/thread/39599
 # (必选) 股票日线数据，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-trading-data
-stock_data_path = data_center_path +r"stock-trading-data-pro-2025-08-07"  # 参考：https://bbs.quantclass.cn/thread/39599
+stock_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-trading-data-pro"  # 参考：https://bbs.quantclass.cn/thread/39599
 # (必选) 指数数据路径，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-main-index-data
-index_data_path = r"stock-main-index-data-2025-08-06"
+index_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-main-index-data"
 # (可选) 财务数据，全量数据下载链接：https://www.quantclass.cn/data/stock/stock-fin-data-xbx
-fin_data_path = r"stock-fin-data-xbx-2025-08-07"
-
+fin_data_path = r"/Users/wangminli/我的文档/Quant/邢不行量化课程-付费/下载数据/stock-fin-data-xbx"
 
 # ====================================================================================================
 # 3️⃣ 策略配置
 # ====================================================================================================
 strategy = {
-    'name': 'factor_下影线占比',  # 策略名
-    'hold_period': '3D',  # 持仓周期，W 代表周，M 代表月，还支持日频：3D、5D、10D
-    'select_num': 5,  # 选股数量，可以是整数，也可以是小数，比如 0.1 表示选取 10% 的股票
+    'name': '我的基于市值和季度PEG构建的选股策略',  # 策略名
+    'hold_period': '1W',  # 持仓周期，W 代表周，M 代表月，还支持日频：3D、5D、10D
+    'select_num': 10,  # 选股数量，可以是整数，也可以是小数，比如 0.1 表示选取 10% 的股票
     "factor_list": [  # 选股因子列表
-        ('factor_下影线占比', True, None, 1), # %  + 市值 权重 1 年化93%
-        ('市值', True, 'None', 1),
+        # ** 因子格式说明 **
+        # 因子名称（与 '因子库' 文件中的名称一致），排序方式（True 为升序，False 为降序），因子参数，因子权重
 
+        ('成交额缩波因子', True, (10, 60), 1),
+        ('Ret', True, 5, 0.5),
+        ('季度PEG', True, None, 1),
+        #('窗口最低价比值', 120, 'pct:>=0.2'),  # 排除60天接近最低价区间（连跌）
+        #('异常高换手率过滤', 10, 'val:==0'),  # 使用10日窗口，排除因子值为1的股票
+        #("成交额缩量因子", (3, 24), 'val:<3', True),
+        #('资金流强度', False, [5, 20, 1.2], 2),  # 新增因子
+        # 案例说明：使用'市值.py'因子，从小到大排序（越小越是我想要），None表示无额外参数，后面计算复合选股因子的时候权重为1
+        # 可添加多个选股因子
     ],
     "filter_list": [
-        ('日均线', 20, 'val:<0', True),  # 5日均线 高于=大于
-        ('月份', [1, 4], 'val:!=1'),  # 不在1、4月份选股
-    ]  # 过滤因子列表 # 过滤因子列表
+        ('市值', None, 'val:<=3000000000'),
+        ('月份', [1, 4], 'val:!=1'),  # 不在4月份选股
+        ('季度PEG', None, 'val:>0'),
+        #('窗口最低价比值', 120, 'pct:>=0.2'),
+        #("成交额缩量因子", (8, 24), 'val:<3', True),
+    ]  # 过滤因子列表
 }
 
 days_listed = 250  # 上市至今交易天数
 
-excluded_boards = ["bj","kcb"]  # 过滤板块，默认不过滤
-# excluded_boards = ["cyb", "kcb", "bj"]  # 同时过滤创业板和科创板和北交所
-# 资金曲线再择时
-equity_timing = {'name': 'N日涨跌幅择时', 'params': [3, -0.05]}
+# excluded_boards = ["bj"]  # 过滤板块，默认不过滤
+excluded_boards = ["kcb", "bj","cyb"]  # 同时过滤创业板和科创板和北交所
 
+#equity_timing = {"name": "N日涨跌幅择时", "params": [3,-0.07]}
 
 # ====================================================================================================
 # 4️⃣ 模拟交易配置

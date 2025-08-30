@@ -203,7 +203,7 @@ def show_plot_performance(conf: BacktestConfig, account_df, rtn, year_return, ti
         data_dict[col_name] = col_name
 
     # 如果画资金曲线，同时也会画上回撤曲线
-    pic_title = f"累积净值:{rtn.at['累积净值', 0]}, 年化收益:{rtn.at['年化收益', 0]}, 最大回撤:{rtn.at['最大回撤', 0]}"
+    pic_title = "策略："+conf.strategy.name + f"，开始日期：{conf.start_date} 累积净值:{rtn.at['累积净值', 0]}， 年化收益:{rtn.at['年化收益', 0]}， 最大回撤:{rtn.at['最大回撤', 0]}"
     pic_desc = conf.get_fullname()
     
     # 使用strategy_evaluate方法中生成的指标

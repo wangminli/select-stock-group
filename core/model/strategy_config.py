@@ -279,7 +279,7 @@ class StrategyConfig:
         return f"{self.name}-{self.hold_period}-{self.select_num}-{self.factor_list}-{self.filter_list}"
 
     def get_fullname(self):
-        return f"{self.name}-周期{self.hold_period}-数量{self.select_num}-因子: {self.factor_list}-过滤：{self.filter_list}"
+        return f"周期：{self.hold_period} -数量：{self.select_num} -因子: {self.factor_list}<br> -过滤：{self.filter_list}"
 
     def max_int_param(self) -> int:
         max_int = 0

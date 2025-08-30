@@ -101,7 +101,7 @@ def draw_equity_curve_plotly(df, data_dict, date_col=None, right_axis=None, pic_
                               xref='paper',
                               yref='paper',
                               x=0.5,
-                              y=1.05,
+                              y=1.06,
                               showarrow=False,
                               font=dict(size=12, color='black'),
                               align='center',
