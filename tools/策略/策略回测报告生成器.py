@@ -1537,7 +1537,7 @@ def main():
     import sys
 
     # 默认数据目录
-    default_data_dir = r"/Users/wangminli/PycharmProjects/select-stock-group/data/回测结果/策略"
+    default_data_dir = r"/data/回测结果/策略"
 
     # 从命令行参数获取数据目录
     data_dir = sys.argv[1] if len(sys.argv) > 1 else default_data_dir

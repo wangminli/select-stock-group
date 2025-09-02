@@ -15,8 +15,8 @@ import matplotlib.font_manager as fm
 
 
 # 文件路径
-monthly_file_path = r'/Users/wangminli/PycharmProjects/select-stock-group/data/回测结果/超跌反弹拐点趋势捕捉_乖离率量化因子_换手率/月度账户收益.csv'
-yearly_file_path = r'/Users/wangminli/PycharmProjects/select-stock-group/data/回测结果/超跌反弹拐点趋势捕捉_乖离率量化因子_换手率/年度账户收益.csv'
+monthly_file_path = r'/data/回测结果/小市值基本面优化/月度账户收益.csv'
+yearly_file_path = r'/data/回测结果/小市值基本面优化/年度账户收益.csv'
 
 try:
     # ==================== 读取和处理数据 ====================
@@ -98,7 +98,7 @@ try:
     # 添加百分比符号到热力图标注，并对重点数值加粗
     for text in ax1.texts:
         t = float(text.get_text())
-        text.set_text(f"{t:.2f}%")
+        text.set_text(f"{t:.2f}")
         if abs(t) >= 10:
             text.set_fontweight('bold')
             text.set_color('black')
