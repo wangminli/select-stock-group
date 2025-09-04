@@ -1,4 +1,5 @@
 '''
+使用方法： 修改strategy_name即可
 来源：https://bbs.quantclass.cn/thread/67977
 '''
 #!/usr/bin/env python3
@@ -22,6 +23,9 @@ import os
 from datetime import datetime
 from typing import Dict, List, Tuple, Optional
 
+# 默认数据目录
+strategy_name = "PB择时策略"
+default_data_dir = r"/Users/wangminli/PycharmProjects/select-stock-group/data/回测结果/" + strategy_name
 
 class BacktestReportGenerator:
     """回测报告生成器"""
@@ -56,7 +60,7 @@ class BacktestReportGenerator:
                 return False
                 
             # 加载选股结果数据
-            selection_file = os.path.join(self.data_dir, '策略选股结果.csv')
+            selection_file = os.path.join(self.data_dir, strategy_name + '选股结果.csv')
             if os.path.exists(selection_file):
                 self.selection_data = pd.read_csv(selection_file)
                 self.selection_data['交易日期'] = pd.to_datetime(self.selection_data['交易日期'])
@@ -1536,8 +1540,6 @@ def main():
     """
     import sys
 
-    # 默认数据目录
-    default_data_dir = r"/data/回测结果/策略"
 
     # 从命令行参数获取数据目录
     data_dir = sys.argv[1] if len(sys.argv) > 1 else default_data_dir

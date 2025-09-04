@@ -105,5 +105,6 @@ if __name__ == '__main__':
     比如：
         资金流强度_(5, 20, 1.2)
         市值_None
+        布林带偏离度_None：这个非常笔直，很神奇
     """
-    factor_analysis(backtest_config, factor_name='资金流强度_(5, 20, 1.2)')
+    factor_analysis(backtest_config, factor_name='布林带偏离度_None')
