@@ -24,7 +24,7 @@ from datetime import datetime
 from typing import Dict, List, Tuple, Optional
 
 # 默认数据目录
-strategy_name = "PB择时策略"
+strategy_name = "策略"
 default_data_dir = r"/Users/wangminli/PycharmProjects/select-stock-group/data/回测结果/" + strategy_name
 
 class BacktestReportGenerator:
@@ -1082,7 +1082,7 @@ class BacktestReportGenerator:
             playBtn.textContent = '⏸️ 暂停播放';
             playBtn.className = 'btn btn-secondary';
             
-            const intervalTime = 1000 / playSpeed;
+            const intervalTime = 1500 / playSpeed;
             
             playInterval = setInterval(() => {
                 const currentIndex = dateList.indexOf(currentDate);
@@ -1108,7 +1108,7 @@ class BacktestReportGenerator:
             // 如果正在播放，重新启动以应用新速度
             if (isPlaying) {
                 clearInterval(playInterval);
-                const intervalTime = 1000 / playSpeed;
+                const intervalTime = 1500 / playSpeed;
                 
                 playInterval = setInterval(() => {
                     const currentIndex = dateList.indexOf(currentDate);
